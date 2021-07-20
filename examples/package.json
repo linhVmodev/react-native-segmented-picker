@@ -21,7 +21,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.6.3",
     "react": "16.9.0",
-    "react-native": "0.61.2"
+    "react-native": "0.62.3"
   },
   "peerDependencies": {
     "react-native-segmented-picker": "2.0.0"
