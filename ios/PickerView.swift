@@ -54,9 +54,18 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     // AKA: View Did Appear
     if newWindow != nil {
       picker.frame = self.frame
+        picker.frame.size = CGSize(width: 170, height: picker.frame.height)
+        picker.center = self.center
       picker.accessibilityIdentifier = nativeTestIDProp as String
+        
     }
   }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let subViews = picker.subviews
+        subViews.last?.backgroundColor = .clear
+    }
 
   /**
    * Converts the React `options` prop to a typed Swift struct and enforces specific ordering. Also
@@ -70,6 +79,10 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     for column in optionsProp {
       options += [PickerColumn(column: column)]
     }
+    options.enumerated().forEach { index, option in
+        picker.selectRow(10000 / option.items.count * option.items.count, inComponent: index, animated: false)
+    }
+    
     if (self.defaultSelectionsApplied == false) {
       applyDefaultSelections()
     } else {
@@ -109,6 +122,7 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     picker.reloadAllComponents()
     for (i, option) in options.enumerated() {
       let prevSelection = previousSelections.value(forKey: option.key) as? Int ?? 0
+        // ???
       if options[i].items.indices.contains(prevSelection) {
         picker.selectRow(prevSelection, inComponent: i, animated: false)
       }
@@ -156,50 +170,71 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
   _ pickerView: UIPickerView,
     numberOfRowsInComponent component: Int
   ) -> Int {
-    return options[component].items.count
+    return 20000
+//    return options[component].items.count
   }
 
   /**
    * Returns the label text for each list item based on it's column and list index.
    * @return {String?}
    */
-  func pickerView(
-    _ pickerView: UIPickerView,
-    viewForRow row: Int,
-    forComponent component: Int,
-    reusing view: UIView?
-  ) -> UIView {
-    if #available(iOS 14, *) {
-      // No need to add the selection marker.
-    } else {
-      // iOS Versions earlier than 14 do not have a background marker, so
-      // we must manually add the sub views:
-      if component + 1 == options.count {
-        renderLegacySelectionMarker()
-      }
-      pickerView.subviews[1].backgroundColor = UIColor(
-        hexString: theme.selectionMarkerBorderColor
-      )
-      pickerView.subviews[2].backgroundColor = UIColor(
-        hexString: theme.selectionMarkerBorderColor
-      )
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        var pickerLabel: UILabel? = (view as? UILabel)
+        let isCurrentSelect = pickerView.selectedRow(inComponent: component) == row
+        
+        let font = isCurrentSelect ?
+            UIFont.systemFont(ofSize: 48) :
+            UIFont.systemFont(ofSize: 20)
+        
+        if pickerLabel == nil {
+            pickerLabel = UILabel()
+            pickerLabel?.font = font
+            pickerLabel?.textAlignment = .center
+        }
+        
+        let index = row % options[component].items.count
+        pickerLabel?.text = options[component].items[index].label
+        pickerLabel?.textColor = .black
+        
+        return pickerLabel ?? UIView()
     }
-    let itemDimensions = pickerView.rowSize(forComponent: component)
-    let width = itemDimensions.width
-    let height = itemDimensions.height
-    let frame = CGRect(x: 0, y: 0, width: width, height: height)
-    let label = UILabel(frame: frame)
-    label.text = options[component].items[row].label
-    label.accessibilityIdentifier = options[component].items[row].testID
-    label.font = label.font.withSize(15.5)
-    if #available(iOS 14, *) {
-      // Do not modify the font color.
-    } else {
-      label.textColor = UIColor(hexString: theme.pickerItemTextColor)
-    }
-    label.textAlignment = .center
-    return label
-  }
+//  func pickerView(
+//    _ pickerView: UIPickerView,
+//    viewForRow row: Int,
+//    forComponent component: Int,
+//    reusing view: UIView?
+//  ) -> UIView {
+//    if #available(iOS 14, *) {
+//      // No need to add the selection marker.
+//    } else {
+//      // iOS Versions earlier than 14 do not have a background marker, so
+//      // we must manually add the sub views:
+//      if component + 1 == options.count {
+//        renderLegacySelectionMarker()
+//      }
+//      pickerView.subviews[1].backgroundColor = UIColor(
+//        hexString: theme.selectionMarkerBorderColor
+//      )
+//      pickerView.subviews[2].backgroundColor = UIColor(
+//        hexString: theme.selectionMarkerBorderColor
+//      )
+//    }
+//    let itemDimensions = pickerView.rowSize(forComponent: component)
+//    let width = itemDimensions.width
+//    let height = itemDimensions.height
+//    let frame = CGRect(x: 0, y: 0, width: width, height: height)
+//    let label = UILabel(frame: frame)
+//    label.text = options[component].items[row].label
+//    label.accessibilityIdentifier = options[component].items[row].testID
+//    label.font = label.font.withSize(15.5)
+//    if #available(iOS 14, *) {
+//      // Do not modify the font color.
+//    } else {
+//      label.textColor = UIColor(hexString: theme.pickerItemTextColor)
+//    }
+//    label.textAlignment = .center
+//    return label
+//  }
 
   /**
    * Emits an event to React Native whenever a selection change occurs.
@@ -211,8 +246,10 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     inComponent component: Int
   ) -> Void {
     let columnKey = options[component].key
-    let columnValue = options[component].items[row].value
+    let index = row % options[component].items.count
+    let columnValue = options[component].items[index].value
     onValueChange?(["column": columnKey, "value": columnValue])
+    pickerView.reloadComponent(component)
   }
 
   /**
@@ -277,7 +314,8 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     let selectionIndexes = NSMutableDictionary()
     for (i, column) in options.enumerated() {
       let itemIndex = picker.selectedRow(inComponent: i)
-      selectionIndexes.setValue(options[i].items[itemIndex].value, forKey: column.key)
+        let index = itemIndex % options[i].items.count
+      selectionIndexes.setValue(options[i].items[index].value, forKey: column.key)
     }
     return selectionIndexes
   }
@@ -300,8 +338,15 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
    * @return {Int}
    */
   func findItemIndex(columnIndex: Int, itemValue: String) -> Int {
-    return self.options[columnIndex].items.firstIndex(where: {
-      $0.value == itemValue
-    }) ?? 0
+    for index in 10000..<20000 {
+        let idx = index % options[columnIndex].items.count
+        if options[columnIndex].items[idx].value == itemValue {
+            return index
+        }
+    }
+    return 0
+//    return self.options[columnIndex].items.firstIndex(where: {
+//      $0.value == itemValue
+//    }) ?? 0
   }
 }
