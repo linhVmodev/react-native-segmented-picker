@@ -219,13 +219,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@adammcarth'
+          scope: '@linhVmodev'
       - name: Submit Package Update (GitHub Packages)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mv package.json npm_package.json
-          cat npm_package.json | jq -c '.name="@adammcarth/react-native-segmented-picker"' > package.json
+          cat npm_package.json | jq -c '.name="@linhVmodev/react-native-segmented-picker"' > package.json
           yarn build
           npm publish
       - name: Archive Package (Tarball)

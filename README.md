@@ -1,6 +1,6 @@
 # React Native Segmented Picker
 
-[![Syntax, Unit & E2E Tests](https://github.com/adammcarth/react-native-segmented-picker/workflows/Syntax%2C%20Unit%20%26%20E2E%20Tests/badge.svg)](https://github.com/adammcarth/react-native-segmented-picker/actions?query=workflow%3A%22Syntax%2C%20Unit%20%26%20E2E%20Tests%22)
+[![Syntax, Unit & E2E Tests](https://github.com/linhVmodev/react-native-segmented-picker/workflows/Syntax%2C%20Unit%20%26%20E2E%20Tests/badge.svg)](https://github.com/linhVmodev/react-native-segmented-picker/actions?query=workflow%3A%22Syntax%2C%20Unit%20%26%20E2E%20Tests%22)
 [![NPM Version](https://img.shields.io/npm/v/react-native-segmented-picker.svg?style=flat-square)](https://www.npmjs.com/package/react-native-segmented-picker)
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
@@ -22,7 +22,7 @@ $ yarn add react-native-segmented-picker
 # $ npm install --save react-native-segmented-picker
 ```
 
-You may also setup the [Native iOS Extension](https://github.com/adammcarth/react-native-segmented-picker/tree/master/docs/Native%20iOS.md) at this time, but this is not mandatory.
+You may also setup the [Native iOS Extension](https://github.com/linhVmodev/react-native-segmented-picker/tree/master/docs/Native%20iOS.md) at this time, but this is not mandatory.
 
 ## Usage
 
@@ -72,7 +72,7 @@ class Example extends Component {
 }
 ```
 
-Further examples can be found in [./examples/src](https://github.com/adammcarth/react-native-segmented-picker/tree/master/examples/src).
+Further examples can be found in [./examples/src](https://github.com/linhVmodev/react-native-segmented-picker/tree/master/examples/src).
 
 ## Props, Events & Methods Reference
 
@@ -83,7 +83,7 @@ Further examples can be found in [./examples/src](https://github.com/adammcarth/
 | `visible`                  | Not used by default. Set to `true` or `false` to manually handle visibility.                                                                                             |             |
 | `options`                  | An array of columns: `[{ key: '', flex?: 1, testID?: '', items: [{ label: '', value: '', key?: '', testID?: '' }] }]`                                                    | `[]`        |
 | `defaultSelections`        | Eg: `{column: 'value', ...}`                                                                                                                                             | `{}`        |
-| `native`                   | Use the native UIPickerView component on iOS. Requires [additional setup](https://github.com/adammcarth/react-native-segmented-picker/tree/master/docs/Native%20iOS.md). | `false`     |
+| `native`                   | Use the native UIPickerView component on iOS. Requires [additional setup](https://github.com/linhVmodev/react-native-segmented-picker/tree/master/docs/Native%20iOS.md). | `false`     |
 | `nativeTestID`             | Accessibility identifier of the native component for E2E testing.                                                                                                        | `''`        |
 | `size`                     | Floating point between 0 and 1 representing the percentage of screen to take up.                                                                                         | `0.45`      |
 | `confirmText`              | Text displayed in the top right hand corner.                                                                                                                             | `'Done'`    |
@@ -259,7 +259,7 @@ await expect(element(by.id('col_1'))).toBeVisible();
 await element(by.id('col_1_option_1')).tap();
 ```
 
-You can see full examples in our own testing suite [here](https://github.com/adammcarth/react-native-segmented-picker/tree/master/__tests__). Keep in mind there are also a small number of `testID` attributes which are automatically set on fixed elements for your convenience.
+You can see full examples in our own testing suite [here](https://github.com/linhVmodev/react-native-segmented-picker/tree/master/__tests__). Keep in mind there are also a small number of `testID` attributes which are automatically set on fixed elements for your convenience.
 
 ```js
 import { TEST_IDS } from 'react-native-segmented-picker';
@@ -273,11 +273,11 @@ import { TEST_IDS } from 'react-native-segmented-picker';
 
 This is an open source project. Bug fixes, improvements and the addition of useful new features to this package are greatly appreciated.
 
-1. Fork and clone the [repository from GitHub](https://github.com/adammcarth/react-native-segmented-picker).
+1. Fork and clone the [repository from GitHub](https://github.com/linhVmodev/react-native-segmented-picker).
 2. Setup: `yarn install`.
 3. Checkout a new branch, eg: `feature/my-thing` or `bugfix/terrible-thing`.
 4. After making any changes, make sure that `yarn test` still passes.
 5. Are there new unit test(s) that you could write to capture your changes?
 6. Submit a pull request to `master` outlining what your change is and how you tested it.
 
-Made with love in Melbourne by [Adam McArthur](https://github.com/adammcarth).
+Made with love in Melbourne by [Adam McArthur](https://github.com/linhVmodev).
